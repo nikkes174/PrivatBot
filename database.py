@@ -98,8 +98,8 @@ async def check_subscriptions() -> None:
 
         rows = await conn.fetch(
             """
-            SELECT user_id, duration_months, recurring_id 
-            FROM public.privat_user 
+            SELECT user_id, duration_months, recurring_id
+            FROM public.privat_user
             WHERE end_subscription < $1
             """,
             today,
@@ -118,8 +118,8 @@ async def check_subscriptions() -> None:
                     new_end = today + timedelta(days=30 * months)
                     await conn.execute(
                         """
-                        UPDATE public.privat_user 
-                        SET start_subscription=$1, end_subscription=$2 
+                        UPDATE public.privat_user
+                        SET start_subscription=$1, end_subscription=$2
                         WHERE user_id=$3
                         """,
                         today,
@@ -128,11 +128,10 @@ async def check_subscriptions() -> None:
                     )
                     await bot.send_message(
                         user_id,
-                        "✅ Подписка автоматически продлена. Спасибо, что остаетесь с нами!",
+                        "✅ Подписка автоматически продлена."
+                        " Спасибо, что остаетесь с нами!",
                     )
-                    logging.info(
-                        "🔄 Продлена подписка для user_id=%s", user_id
-                    )
+                    logging.info("🔄 Продлена подписка для user_id=%s", user_id)
                 else:
                     await _remove_user(
                         conn,

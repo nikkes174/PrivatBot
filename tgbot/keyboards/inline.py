@@ -10,7 +10,7 @@ def first_start_keyboard():
     builder.button(
         text="📊 Ознакомление с офертой",
         url="https://telegra.ph/"
-            "Dogovor-ofertypolzovatelskoe-soglashenie-s-klientom-08-07",
+        "Dogovor-ofertypolzovatelskoe-soglashenie-s-klientom-08-07",
     )
     builder.adjust(1)
     return builder.as_markup()
@@ -20,7 +20,7 @@ def chane_sub():
     builder = InlineKeyboardBuilder()
     builder.button(
         text="️‍️‍️‍️‍️‍️‍️‍✅ Отменить автопродление",
-        callback_data="to_change"
+        callback_data="to_change",
     )
     builder.adjust(1)
     return builder.as_markup()

@@ -1,12 +1,11 @@
 from dataclasses import dataclass
 from typing import Optional
-
+from sqlalchemy.engine.url import URL
 from environs import Env
 
 
 @dataclass
 class DbConfig:
-
     host: str
     password: str
     user: str
@@ -17,8 +16,6 @@ class DbConfig:
     def construct_sqlalchemy_url(
         self, driver="asyncpg", host=None, port=None
     ) -> str:
-        from sqlalchemy.engine.url import URL
-
         if not host:
             host = self.host
         if not port:
@@ -71,7 +68,10 @@ class RedisConfig:
 
     def dsn(self) -> str:
         if self.redis_pass:
-            return f"redis://:{self.redis_pass}@{self.redis_host}:{self.redis_port}/0"
+            return (
+                f"redis://:{self.redis_pass}@"
+                f"{self.redis_host}:{self.redis_port}/0"
+            )
         else:
             return f"redis://{self.redis_host}:{self.redis_port}/0"
 
