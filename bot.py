@@ -7,7 +7,11 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.base import BaseStorage
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.storage.redis import RedisStorage, DefaultKeyBuilder
-from aiogram.types import BotCommand, BotCommandScopeDefault, MenuButtonCommands
+from aiogram.types import (
+    BotCommand,
+    BotCommandScopeDefault,
+    MenuButtonCommands,
+)
 
 from database import scheduler
 from tgbot.config import load_config, Config
@@ -24,7 +28,9 @@ async def on_startup(bot: Bot, admin_ids: list[int]) -> None:
     await bot.set_chat_menu_button(menu_button=MenuButtonCommands())
 
 
-def register_global_middlewares(dp: Dispatcher, config: Config, session_pool=None) -> None:
+def register_global_middlewares(
+    dp: Dispatcher, config: Config, session_pool=None
+) -> None:
     """Регистрирует глобальные middleware."""
     middlewares = [ConfigMiddleware(config)]
     for middleware in middlewares:
@@ -54,7 +60,10 @@ async def main() -> None:
     config = load_config(".env")
     storage = get_storage(config)
 
-    bot = Bot(token=config.tg_bot.token, default=DefaultBotProperties(parse_mode="HTML"))
+    bot = Bot(
+        token=config.tg_bot.token,
+        default=DefaultBotProperties(parse_mode="HTML"),
+    )
     dp = Dispatcher(storage=storage)
     dp.include_router(user_router)
     register_global_middlewares(dp, config)

@@ -74,7 +74,9 @@ async def charge_recurring_payment(recurring_id: str, amount: int) -> str:
     Заглушка для рекуррентного платежа.
     Здесь нужно вызвать реальный API Робокассы.
     """
-    logging.info("⚡ Платёж по recurring_id=%s на сумму %s", recurring_id, amount)
+    logging.info(
+        "⚡ Платёж по recurring_id=%s на сумму %s", recurring_id, amount
+    )
     # TODO: реализовать реальный запрос к API Робокассы
     return "OK"
 
@@ -119,13 +121,22 @@ async def check_subscriptions() -> None:
                         user_id,
                     )
                     await bot.send_message(
-                        user_id, "✅ Подписка автоматически продлена. Спасибо, что остаетесь с нами!"
+                        user_id,
+                        "✅ Подписка автоматически продлена. Спасибо, что остаетесь с нами!",
                     )
-                    logging.info("🔄 Продлена подписка для user_id=%s", user_id)
+                    logging.info(
+                        "🔄 Продлена подписка для user_id=%s", user_id
+                    )
                 else:
-                    await _remove_user(conn, user_id, "❌ Автоплатёж не прошёл, подписка завершена.")
+                    await _remove_user(
+                        conn,
+                        user_id,
+                        "❌ Автоплатёж не прошёл, подписка завершена.",
+                    )
             else:
-                await _remove_user(conn, user_id, "❌ Срок подписки истёк, доступ закрыт.")
+                await _remove_user(
+                    conn, user_id, "❌ Срок подписки истёк, доступ закрыт."
+                )
 
     except Exception as e:
         logging.error("❌ Ошибка при проверке подписок: %s", e)
@@ -138,7 +149,9 @@ async def _remove_user(conn, user_id: int, message: str) -> None:
     try:
         await bot.ban_chat_member(CHANNEL_ID, user_id)
         await bot.unban_chat_member(CHANNEL_ID, user_id)  # «кик» пользователя
-        await conn.execute("DELETE FROM public.privat_user WHERE user_id=$1", user_id)
+        await conn.execute(
+            "DELETE FROM public.privat_user WHERE user_id=$1", user_id
+        )
         await bot.send_message(user_id, message)
         logging.info("❌ Удалён user_id=%s (причина: %s)", user_id, message)
     except Exception as e:

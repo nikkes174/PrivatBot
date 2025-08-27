@@ -24,11 +24,14 @@ def test_generate_payment_url():
     assert len(params["SignatureValue"]) == 32
 
 
-@pytest.mark.parametrize("out_sum, inv_id, shp_params", [
-    ("100.00", "1", {"Shp_user": "123"}),
-    ("200.00", "2", {"Shp_user": "456"}),
-    ("300.00", "3", {"Shp_user": "789"}),
-])
+@pytest.mark.parametrize(
+    "out_sum, inv_id, shp_params",
+    [
+        ("100.00", "1", {"Shp_user": "123"}),
+        ("200.00", "2", {"Shp_user": "456"}),
+        ("300.00", "3", {"Shp_user": "789"}),
+    ],
+)
 def test_signature_length_and_type(out_sum, inv_id, shp_params):
     signature = service._generate_signature(out_sum, inv_id, shp_params)
     assert isinstance(signature, str)
@@ -54,5 +57,3 @@ async def test_start_payment():
 
     assert "Оплатить" in args[0]
     callback_query.answer.assert_awaited_once()
-
-

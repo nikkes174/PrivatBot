@@ -28,9 +28,12 @@ app = FastAPI()
 
 logging.basicConfig(level=logging.INFO)
 
+
 def generate_signature(*parts: str) -> str:
+
     raw_str = ":".join(parts)
     return hashlib.md5(raw_str.encode("utf-8")).hexdigest().upper()
+
 
 @app.get("/robokassa/result")
 async def robokassa_result(
@@ -38,12 +41,17 @@ async def robokassa_result(
     InvId: str,
     Shp_user: str,
     Shp_months: str,
-    SignatureValue: str
+    SignatureValue: str,
 ):
     """Callback от Robokassa после оплаты (обновление подписки в БД)."""
 
-    my_crc = generate_signature(OutSum, InvId, ROBO_PASS2,
-                                f"Shp_months={Shp_months}", f"Shp_user={Shp_user}")
+    my_crc = generate_signature(
+        OutSum,
+        InvId,
+        ROBO_PASS2,
+        f"Shp_months={Shp_months}",
+        f"Shp_user={Shp_user}",
+    )
 
     if my_crc != SignatureValue.upper():
         logging.error("❌ Bad sign for InvId=%s", InvId)
@@ -59,7 +67,8 @@ async def robokassa_result(
 
     conn = await asyncpg.connect(DB_DSN)
     try:
-        await conn.execute("""
+        await conn.execute(
+            """
             INSERT INTO public.privat_user (user_id, user_name, start_subscription, end_subscription, duration_months, recurring_id)
             VALUES ($1, $2, $3, $4, $5, $6)
             ON CONFLICT (user_id) DO UPDATE
@@ -68,12 +77,22 @@ async def robokassa_result(
                 duration_months = EXCLUDED.duration_months,
                 recurring_id = EXCLUDED.recurring_id,
                 user_name = EXCLUDED.user_name
-        """, user_id, user_name, start_date, end_date, months, recurring_id)
+        """,
+            user_id,
+            user_name,
+            start_date,
+            end_date,
+            months,
+            recurring_id,
+        )
     finally:
         await conn.close()
 
-    logging.info("✅ Оплата подтверждена: user_id=%s, months=%s", user_id, months)
+    logging.info(
+        "✅ Оплата подтверждена: user_id=%s, months=%s", user_id, months
+    )
     return PlainTextResponse(f"OK{InvId}")
+
 
 @app.get("/robokassa/success")
 async def robokassa_success(
@@ -81,12 +100,17 @@ async def robokassa_success(
     InvId: str,
     Shp_user: str,
     Shp_months: str,
-    SignatureValue: str
+    SignatureValue: str,
 ):
     """Успешная оплата (видно в браузере клиента)."""
 
-    my_crc = generate_signature(OutSum, InvId, ROBO_PASS1,
-                                f"Shp_months={Shp_months}", f"Shp_user={Shp_user}")
+    my_crc = generate_signature(
+        OutSum,
+        InvId,
+        ROBO_PASS1,
+        f"Shp_months={Shp_months}",
+        f"Shp_user={Shp_user}",
+    )
 
     if my_crc.lower() != SignatureValue.lower():
         logging.error("❌ Bad success sign for InvId=%s", InvId)
@@ -98,18 +122,19 @@ async def robokassa_success(
         chat_id=CHANNEL_ID,
         expire_date=None,
         member_limit=1,
-        name=f"Оплата InvId={InvId}"
+        name=f"Оплата InvId={InvId}",
     )
 
     await bot.send_message(
         user_id,
         f"✅ Оплата прошла успешно!\n"
         f"Вот доступ в закрытый канал:\n{invite_link.invite_link}",
-        reply_markup=chane_sub()
+        reply_markup=chane_sub(),
     )
 
     logging.info("🔑 Invite link создан для user_id=%s", user_id)
     return PlainTextResponse("Оплата прошла успешно. Вернись в Telegram 😉")
+
 
 @app.get("/robokassa/fail")
 async def robokassa_fail(request: Request):

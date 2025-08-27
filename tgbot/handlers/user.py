@@ -6,10 +6,7 @@ import asyncpg
 import aiohttp
 
 from aiogram import types, Router, F
-from aiogram.types import (
-    FSInputFile,
-    CallbackQuery
-)
+from aiogram.types import FSInputFile, CallbackQuery
 from aiogram.filters import CommandStart
 from dotenv import load_dotenv
 
@@ -53,7 +50,7 @@ async def user_start(message: types.Message) -> None:
 
     await message.answer(
         "Перед покупкой не забудь ознакомиться с офертой 👇🏻",
-        reply_markup=first_start_keyboard()
+        reply_markup=first_start_keyboard(),
     )
 
 
@@ -70,15 +67,18 @@ async def show_tariffs(call: CallbackQuery) -> None:
             "➡️ 6 месяцев — 6 490 ₽ (скидка 15%)\n"
             "➡️ 9 месяцев — 8 990 ₽ (скидка 20%)"
         ),
-        reply_markup=kb
+        reply_markup=kb,
     )
+
 
 async def charge_recurring_payment(recurring_id: str, amount: int) -> str:
     """Вызывает Robokassa API для рекуррентного платежа."""
     invoice_id = int(time.time())
     out_sum = f"{amount:.2f}"
 
-    signature_str = f"{MERCHANT_LOGIN}:{out_sum}:{invoice_id}:{recurring_id}:{PASSWORD1}"
+    signature_str = (
+        f"{MERCHANT_LOGIN}:{out_sum}:{invoice_id}:{recurring_id}:{PASSWORD1}"
+    )
     signature = hashlib.md5(signature_str.encode()).hexdigest()
 
     payload = {
@@ -91,7 +91,9 @@ async def charge_recurring_payment(recurring_id: str, amount: int) -> str:
     }
 
     async with aiohttp.ClientSession() as session:
-        async with session.post("https://auth.robokassa.ru/Merchant/Recurring", data=payload) as resp:
+        async with session.post(
+            "https://auth.robokassa.ru/Merchant/Recurring", data=payload
+        ) as resp:
             text = await resp.text()
             logging.info("⚡ Recurring payment: %s", text)
             return text
@@ -106,13 +108,15 @@ async def cancel_subscription(call: CallbackQuery) -> None:
         conn = await asyncpg.connect(DB)
         await conn.execute(
             "UPDATE public.privat_user SET recurring_id = NULL WHERE user_id = $1",
-            user_id
+            user_id,
         )
         await conn.close()
         logging.info("🔴 Подписка отменена для user_id=%s", user_id)
         await call.message.edit_text("🔴 Ваша подписка была отменена.")
     except Exception as e:
         logging.error("❌ Ошибка при отмене подписки: %s", e)
-        await call.message.edit_text("⚠️ Не удалось отменить подписку, попробуйте позже.")
+        await call.message.edit_text(
+            "⚠️ Не удалось отменить подписку, попробуйте позже."
+        )
 
     await call.answer()
