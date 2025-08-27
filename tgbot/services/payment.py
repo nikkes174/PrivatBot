@@ -40,7 +40,10 @@ class PaymentService:
     ) -> str:
         """Формирует подпись MD5 для Robokassa."""
         shp_str = ":".join(f"{k}={v}" for k, v in sorted(shp_params.items()))
-        string_for_sign = f"{self.merchant_login}:{out_sum}:{inv_id}:{self.password1}:{shp_str}"
+        string_for_sign = (
+            f"{self.merchant_login}:{out_sum}:{inv_id}:"
+            f"{self.password1}:{shp_str}"
+        )
         return hashlib.md5(string_for_sign.encode("utf-8")).hexdigest().upper()
 
     def generate_payment_url(

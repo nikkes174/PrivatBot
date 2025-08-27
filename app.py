@@ -69,7 +69,12 @@ async def robokassa_result(
     try:
         await conn.execute(
             """
-            INSERT INTO public.privat_user (user_id, user_name, start_subscription, end_subscription, duration_months, recurring_id)
+            INSERT INTO public.privat_user (user_id,
+             user_name,
+              start_subscription,
+               end_subscription,
+                duration_months,
+                 recurring_id)
             VALUES ($1, $2, $3, $4, $5, $6)
             ON CONFLICT (user_id) DO UPDATE
             SET start_subscription = EXCLUDED.start_subscription,

@@ -34,7 +34,8 @@ async def user_start(message: types.Message) -> None:
         photo = None
 
     caption_text = (
-        "Смешная сумма за результат: 43₽ в день — дешевле, чем проезд в метро!\n"
+        "Смешная сумма за результат:"
+        " 43₽ в день — дешевле, чем проезд в метро!\n"
         "1 290₽/мес — вложение, которое окупится уже через неделю!\n\n"
         "📌 РЕАЛЬНОСТЬ:\n"
         "✔️ Выход из матрицы и контроль своей жизни\n"
@@ -107,7 +108,8 @@ async def cancel_subscription(call: CallbackQuery) -> None:
     try:
         conn = await asyncpg.connect(DB)
         await conn.execute(
-            "UPDATE public.privat_user SET recurring_id = NULL WHERE user_id = $1",
+            "UPDATE public.privat_user "
+            "SET recurring_id = NULL WHERE user_id = $1",
             user_id,
         )
         await conn.close()
