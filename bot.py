@@ -7,11 +7,8 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.base import BaseStorage
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.storage.redis import DefaultKeyBuilder, RedisStorage
-from aiogram.types import (
-    BotCommand,
-    BotCommandScopeDefault,
-    MenuButtonCommands,
-)
+from aiogram.types import (BotCommand, BotCommandScopeDefault,
+                           MenuButtonCommands)
 
 from database import scheduler
 from tgbot.config import Config, load_config
