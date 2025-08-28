@@ -29,7 +29,7 @@ jobs:
       run: pytest -v
 
     - name: Run isort
-      run: isort --check-only --diff --profile black .
+      run: isort --check-only --diff --settings-path ./PrivatBot/pyproject.toml .
 
 
     - name: Run black (format check)
