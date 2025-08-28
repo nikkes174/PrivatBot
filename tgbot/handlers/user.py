@@ -1,13 +1,13 @@
-import os
-import time
 import hashlib
 import logging
-import asyncpg
-import aiohttp
+import os
+import time
 
-from aiogram import types, Router, F
-from aiogram.types import FSInputFile, CallbackQuery
+import aiohttp
+import asyncpg
+from aiogram import F, Router, types
 from aiogram.filters import CommandStart
+from aiogram.types import CallbackQuery, FSInputFile
 from dotenv import load_dotenv
 
 from tgbot.keyboards.inline import first_start_keyboard, tariffs_keyboard

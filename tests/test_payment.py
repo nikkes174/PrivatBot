@@ -2,6 +2,7 @@ import urllib.parse
 from unittest.mock import AsyncMock
 
 import pytest
+
 from tgbot.services.payment import PaymentService
 
 service = PaymentService(merchant_login="test_login", password1="test_pass")

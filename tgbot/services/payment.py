@@ -1,7 +1,7 @@
 import hashlib
+import logging
 import os
 import urllib.parse
-import logging
 from typing import Dict
 
 from aiogram import types

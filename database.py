@@ -1,13 +1,13 @@
 import asyncio
 import logging
-import pytz
-import asyncpg
-from datetime import date, datetime, timedelta
-from dotenv import load_dotenv
-from aiogram import Bot
 import os
+from datetime import date, datetime, timedelta
 from typing import Optional
 
+import asyncpg
+import pytz
+from aiogram import Bot
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -131,9 +131,7 @@ async def check_subscriptions() -> None:
                         "✅ Подписка автоматически продлена."
                         " Спасибо, что остаетесь с нами!",
                     )
-                    logging.info(
-                        "🔄 Продлена подписка для user_id=%s", user_id
-                    )
+                    logging.info("🔄 Продлена подписка для user_id=%s", user_id)
                 else:
                     await _remove_user(
                         conn,
