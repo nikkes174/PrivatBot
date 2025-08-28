@@ -34,3 +34,6 @@ jobs:
     # 3. Проверяем стиль Flake8
     - name: Run flake8 (linting)
       run: flake8 .
+
+    - name: Run isort
+      run: isort --check-only --diff .
