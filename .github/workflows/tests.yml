@@ -22,18 +22,19 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install pytest pytest-asyncio flake8 black
+        
+        
 
-    # 1. Запускаем тесты
     - name: Run pytest
       run: pytest -v
 
-    # 2. Проверяем форматирование Black'ом
+    - name: Run isort
+      run: isort --check-only --diff .
+
     - name: Run black (format check)
       run: black --check --diff .
 
-    # 3. Проверяем стиль Flake8
     - name: Run flake8 (linting)
       run: flake8 .
 
-    - name: Run isort
-      run: isort --check-only --diff .
+
